@@ -303,10 +303,15 @@ def main() -> None:
         "combined workbench model import is not cache-busted with its controller",
     )
 
+    unequal_particle_rows = sum(
+        len(row["sources"]) != len(row["targets"])
+        for row in particle_mapping["mappings"]
+    )
     print(
         "verified: 38 UTN57 rows, 32 ZVVNMOD groups, 139 font-backed codes, "
         "80 editable ZVVNMOD sources, 95 UTN57 targets, 97 alignment rows, "
-        "47 compact editable particle rows (7 with unequal sequence lengths), and Flutter PWA routing"
+        f"47 compact editable particle rows ({unequal_particle_rows} with unequal sequence lengths), "
+        "and Flutter PWA routing"
     )
 
 

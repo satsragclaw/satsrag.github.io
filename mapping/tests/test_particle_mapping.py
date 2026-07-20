@@ -58,7 +58,20 @@ class ParticleMappingTests(unittest.TestCase):
             self.assertTrue(set(row["targets"]) <= target_ids)
             if len(row["sources"]) != len(row["targets"]):
                 unequal += 1
-        self.assertEqual(unequal, 7)
+        self.assertGreater(unequal, 0)
+
+    def test_reviewed_particle_source_sequences_are_preserved(self) -> None:
+        rows = {row["id"]: row for row in self.load_particles()["mappings"]}
+        reviewed = {
+            "particle:05": ["A_INIT", "CH_MEDI", "A_MEDI", "N_MEDI", "N_MEDI", "A_MEDI", "A_FINA"],
+            "particle:15": ["O_INIT", "O_MEDI", "A_FINA"],
+            "particle:16": ["O_INIT", "O_MEDI", "A_FINA"],
+            "particle:25": ["N_INIT", "O_MEDI", "G_MEDI", "O_MEDI", "A_FINA"],
+            "particle:32": ["D_INIT", "A_MEDI", "N_MEDI", "N_MEDI", "A_MEDI", "A_FINA"],
+            "particle:37": ["D_INIT", "A_MEDI", "I_MEDI", "AA_FINA"],
+            "particle:44": ["D_INIT", "O_MEDI", "N_MEDI", "N_MEDI", "A_MEDI", "R_FINA"],
+        }
+        self.assertEqual({row_id: rows[row_id]["sources"] for row_id in reviewed}, reviewed)
 
     def test_generator_reproduces_committed_particle_scaffold(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

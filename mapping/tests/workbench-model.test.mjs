@@ -54,7 +54,7 @@ test("mode is derived against the Git-loaded baseline and never serialized", () 
   const direct = fixture.mappings.find((entry) => entry.id === "source:A_INIT");
   assert.equal(mappingMode(direct, direct), "direct");
 
-  const rightOnly = fixture.mappings.find((entry) => entry.id === "target:A:isol");
+  const rightOnly = fixture.mappings.find((entry) => entry.id === "target:Gx:init");
   assert.equal(mappingMode(rightOnly, rightOnly), "unmapped");
 
   const edited = updateMappingEntry(direct, ["O_INIT"], ["O:init"], "");

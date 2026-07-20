@@ -39,7 +39,7 @@ class MappingDataTests(unittest.TestCase):
         self.assertEqual(len(source_ids), 80)
         self.assertEqual(set(source_ids), set(expected_sources))
         self.assertEqual(len(mapping["mappings"]), 97)
-        self.assertEqual(sum(not entry["sources"] for entry in mapping["mappings"]), 17)
+        self.assertEqual(sum(not entry["sources"] for entry in mapping["mappings"]), 5)
         self.assertEqual(sum(not entry["targets"] for entry in mapping["mappings"]), 2)
         self.assertTrue(all(entry["sources"] or entry["targets"] for entry in mapping["mappings"]))
         self.assertTrue(
@@ -59,16 +59,31 @@ class MappingDataTests(unittest.TestCase):
         self.assertTrue(all(value in source_ids for row in mapping["mappings"] for value in row["sources"]))
         self.assertTrue(all(value in set(target_ids) for row in mapping["mappings"] for value in row["targets"]))
 
-    def test_semantic_names_pre_generate_compact_sequences(self) -> None:
+    def test_current_mapping_keeps_generated_rows_and_reviewed_alignments(self) -> None:
         payload = self.load_mapping()
-        entries = {entry["sources"][0]: entry for entry in payload["mappings"] if entry["sources"]}
+        entries = {entry["id"]: entry for entry in payload["mappings"]}
         sources = {source["id"]: source for source in payload["sources"]}
-        self.assertEqual(entries["A_INIT"]["targets"], ["A:init"])
-        self.assertNotIn("B_I_ISOL", entries)
+        self.assertEqual(entries["source:A_INIT"]["targets"], ["A:init"])
+        self.assertNotIn("source:B_I_ISOL", entries)
         self.assertEqual(sources["HX_AA_FINA"]["name"], "Hx f Aa f")
-        self.assertEqual(entries["HX_AA_FINA"]["targets"], ["Hx:fina", "Aa:fina"])
-        self.assertEqual(entries["NIRUGU"]["targets"], [])
-        self.assertEqual(entries["IR_FINA"]["targets"], [])
+        self.assertEqual(entries["source:HX_AA_FINA"]["targets"], ["Hx:fina", "Aa:fina"])
+        self.assertEqual(entries["source:NIRUGU"]["targets"], [])
+        self.assertEqual(entries["source:IR_FINA"]["targets"], [])
+        reviewed = {
+            "target:A:isol": ["A_INIT", "AA_FINA"],
+            "target:Aa:isol": ["AA_FINA"],
+            "target:B2:fina": ["O_MEDI", "AA_FINA"],
+            "target:Cr:init": ["O_INIT", "O_MEDI"],
+            "target:Dd:medi": ["O_MEDI", "A_MEDI"],
+            "target:Dd:fina": ["O_MEDI", "A_FINA"],
+            "target:G:fina": ["I_MEDI", "AA_FINA"],
+            "target:H:medi": ["A_MEDI", "A_MEDI"],
+            "target:Hx:medi": ["M_MEDI", "M_MEDI"],
+            "target:K2:init": ["K_INIT"],
+            "target:K2:medi": ["K_MEDI"],
+            "target:K2:fina": ["K_FINA"],
+        }
+        self.assertEqual({row_id: entries[row_id]["sources"] for row_id in reviewed}, reviewed)
 
     def test_workbench_markup_and_controller_use_git_baseline(self) -> None:
         page = PAGE_HTML.read_text()

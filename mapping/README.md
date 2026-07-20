@@ -83,7 +83,7 @@ Particle rows use the same compact current-value model:
 }
 ```
 
-The two ordered sequences are independently editable and may have different lengths. The current generated snapshot contains 47 rows, including seven unequal-length rows.
+The two ordered sequences are independently editable and may have different lengths. The generated scaffold contains 47 rows; reviewed Git current values may diverge from the generator's initial sequence suggestions.
 
 ## Font regeneration
 

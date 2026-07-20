@@ -2111,7 +2111,10 @@
     },
     {
       "id": "target:A:isol",
-      "sources": [],
+      "sources": [
+        "A_INIT",
+        "AA_FINA"
+      ],
       "targets": [
         "A:isol"
       ],
@@ -2119,7 +2122,9 @@
     },
     {
       "id": "target:Aa:isol",
-      "sources": [],
+      "sources": [
+        "AA_FINA"
+      ],
       "targets": [
         "Aa:isol"
       ],
@@ -2127,7 +2132,10 @@
     },
     {
       "id": "target:B2:fina",
-      "sources": [],
+      "sources": [
+        "O_MEDI",
+        "AA_FINA"
+      ],
       "targets": [
         "B2:fina"
       ],
@@ -2135,7 +2143,10 @@
     },
     {
       "id": "target:Cr:init",
-      "sources": [],
+      "sources": [
+        "O_INIT",
+        "O_MEDI"
+      ],
       "targets": [
         "Cr:init"
       ],
@@ -2143,7 +2154,10 @@
     },
     {
       "id": "target:Dd:medi",
-      "sources": [],
+      "sources": [
+        "O_MEDI",
+        "A_MEDI"
+      ],
       "targets": [
         "Dd:medi"
       ],
@@ -2151,7 +2165,10 @@
     },
     {
       "id": "target:Dd:fina",
-      "sources": [],
+      "sources": [
+        "O_MEDI",
+        "A_FINA"
+      ],
       "targets": [
         "Dd:fina"
       ],
@@ -2159,7 +2176,10 @@
     },
     {
       "id": "target:G:fina",
-      "sources": [],
+      "sources": [
+        "I_MEDI",
+        "AA_FINA"
+      ],
       "targets": [
         "G:fina"
       ],
@@ -2183,7 +2203,10 @@
     },
     {
       "id": "target:H:medi",
-      "sources": [],
+      "sources": [
+        "A_MEDI",
+        "A_MEDI"
+      ],
       "targets": [
         "H:medi"
       ],
@@ -2191,7 +2214,10 @@
     },
     {
       "id": "target:Hx:medi",
-      "sources": [],
+      "sources": [
+        "M_MEDI",
+        "M_MEDI"
+      ],
       "targets": [
         "Hx:medi"
       ],
@@ -2207,7 +2233,9 @@
     },
     {
       "id": "target:K2:init",
-      "sources": [],
+      "sources": [
+        "K_INIT"
+      ],
       "targets": [
         "K2:init"
       ],
@@ -2215,7 +2243,9 @@
     },
     {
       "id": "target:K2:medi",
-      "sources": [],
+      "sources": [
+        "K_MEDI"
+      ],
       "targets": [
         "K2:medi"
       ],
@@ -2223,7 +2253,9 @@
     },
     {
       "id": "target:K2:fina",
-      "sources": [],
+      "sources": [
+        "K_FINA"
+      ],
       "targets": [
         "K2:fina"
       ],
