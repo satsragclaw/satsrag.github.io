@@ -1,0 +1,20 @@
+{
+  "schema": "utn57-format-controls-v1",
+  "description": "UTN #57 format controls represented in the mapping target inventory.",
+  "provenance": {
+    "title": "Unicode Technical Note #57: Encoding and Shaping of the Mongolian Script",
+    "version": 4,
+    "date": "2024-08-14",
+    "url": "https://www.unicode.org/notes/tn57/tn57-4.html",
+    "section": "2.2.2 Format controls"
+  },
+  "controls": [
+    {
+      "id": "Nirugu",
+      "unit": "Nirugu",
+      "position": "control",
+      "codepoint": "U+180A",
+      "glyph": "᠊"
+    }
+  ]
+}

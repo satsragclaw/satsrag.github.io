@@ -13,6 +13,7 @@ from typing import Any
 POSITIONS = ("isol", "init", "medi", "fina")
 POSITION_NAMES = {"isol": "isol", "i": "init", "m": "medi", "f": "fina"}
 RETAINED_MERGED_CODES = {"N_AA_FINA", "HX_AA_FINA"}
+FORMAT_CONTROL_SCHEMA = "utn57-format-controls-v1"
 
 
 class WrittenUnitTargetParser(HTMLParser):
@@ -70,7 +71,7 @@ def editable_codes(payload: dict[str, Any]) -> list[dict[str, Any]]:
 
 def semantic_targets(name: str, valid_targets: set[str]) -> list[str]:
     if name == "Nirugu":
-        return []
+        return ["Nirugu"] if "Nirugu" in valid_targets else []
     parts = name.split()
     if len(parts) % 2:
         return []
@@ -87,10 +88,42 @@ def semantic_targets(name: str, valid_targets: set[str]) -> list[str]:
     return targets
 
 
-def build_mapping(codes_path: Path, written_units_path: Path) -> dict[str, Any]:
+def format_control_targets(path: Path, start_order: int) -> list[dict[str, Any]]:
+    payload = json.loads(path.read_text())
+    if set(payload) != {"schema", "description", "provenance", "controls"}:
+        raise ValueError("UTN57 format-control root fields differ from schema")
+    if payload["schema"] != FORMAT_CONTROL_SCHEMA or not isinstance(payload["controls"], list):
+        raise ValueError(f"UTN57 format controls must use {FORMAT_CONTROL_SCHEMA}")
+    targets = []
+    for offset, control in enumerate(payload["controls"]):
+        if set(control) != {"id", "unit", "position", "codepoint", "glyph"}:
+            raise ValueError(f"UTN57 format control {offset} fields differ from schema")
+        codepoint = str(control["codepoint"])
+        if not re.fullmatch(r"U\+[0-9A-F]{4,6}", codepoint):
+            raise ValueError(f"UTN57 format control {offset} has invalid codepoint")
+        value = int(codepoint[2:], 16)
+        if control["glyph"] != chr(value) or control["position"] != "control":
+            raise ValueError(f"UTN57 format control {offset} metadata is inconsistent")
+        targets.append(
+            {
+                "id": str(control["id"]),
+                "unit": str(control["unit"]),
+                "position": "control",
+                "glyph": str(control["glyph"]),
+                "order": start_order + offset,
+            }
+        )
+    return targets
+
+
+def build_mapping(
+    codes_path: Path, written_units_path: Path, format_controls_path: Path
+) -> dict[str, Any]:
     parser = WrittenUnitTargetParser()
     parser.feed(written_units_path.read_text())
-    targets = parser.targets
+    targets = parser.targets + format_control_targets(format_controls_path, len(parser.targets))
+    if len({target["id"] for target in targets}) != len(targets):
+        raise ValueError("UTN57 target IDs must be unique")
     valid_targets = {target["id"] for target in targets}
     code_payload = json.loads(codes_path.read_text())
     codes = editable_codes(code_payload)
@@ -151,11 +184,16 @@ def main() -> None:
         "--written-units", type=Path, default=mapping_dir / "data/utn57-written-units.html"
     )
     parser.add_argument(
+        "--format-controls",
+        type=Path,
+        default=mapping_dir / "data/utn57-format-controls.json",
+    )
+    parser.add_argument(
         "--output", type=Path, default=mapping_dir / "data/zvvnmod-utn57-map.json"
     )
     args = parser.parse_args()
 
-    payload = build_mapping(args.codes, args.written_units)
+    payload = build_mapping(args.codes, args.written_units, args.format_controls)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
     direct = sum(
         bool(entry["sources"] and entry["targets"])

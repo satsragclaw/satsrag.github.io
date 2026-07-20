@@ -38,6 +38,8 @@ ZVVNMOD catalogue IDs and mapping values use the Rust constant names; PUA code p
 
 Either `sources` or `targets` may be empty for an unmatched inventory item, but both cannot be empty in the same row. Their lengths are independent. The browser can add, remove, reorder, or replace values on either side. The checked-in Git rows are the Restore baseline, and `direct`, `unmapped`, and `special` are runtime display states derived by comparing the current row with that baseline; they are not serialized.
 
+The UTN57 target inventory combines positional written units from `utn57-written-units.html` with format controls from `utn57-format-controls.json`. UTN #57 v4 §2.2.2 defines U+180A MONGOLIAN NIRUGU as a visible format control that behaves like ZWJ, so the non-positional target `Nirugu` uses `position: "control"` and maps directly from the ZVVNMOD `NIRUGU` code.
+
 Main and particle edits download together as `zvvnmod-utn57-workbench-v2`. The combined root contains one `sha256:…` digest of the exact Git-loaded mapping and particle payloads. Import rejects a file made against a different baseline while avoiding duplicated per-row default arrays. To publish reviewed values, replace the corresponding checked-in JSON payload; Git provides history.
 
 ## Particle mapping generation

@@ -82,6 +82,32 @@ def main() -> None:
     utn_table = (MAPPING / "data/utn57-written-units.html").read_text()
     check(utn_table.count("<tr") == 40, "UTN57 table must contain 38 body rows")
     check(utn_table.count('scope="row"') == 38, "all UTN57 IDs must be row headers")
+    format_controls = json.loads((MAPPING / "data/utn57-format-controls.json").read_text())
+    check(format_controls.get("schema") == "utn57-format-controls-v1", "UTN57 control schema mismatch")
+    check(
+        format_controls.get("provenance")
+        == {
+            "title": "Unicode Technical Note #57: Encoding and Shaping of the Mongolian Script",
+            "version": 4,
+            "date": "2024-08-14",
+            "url": "https://www.unicode.org/notes/tn57/tn57-4.html",
+            "section": "2.2.2 Format controls",
+        },
+        "UTN57 format-control provenance differs",
+    )
+    check(
+        format_controls.get("controls")
+        == [
+            {
+                "id": "Nirugu",
+                "unit": "Nirugu",
+                "position": "control",
+                "codepoint": "U+180A",
+                "glyph": "᠊",
+            }
+        ],
+        "UTN57 format-control inventory differs",
+    )
 
     mapping_path = args.mapping_json
     mapping = json.loads(mapping_path.read_text())
@@ -156,8 +182,9 @@ def main() -> None:
         check(target.get("order") == index, f"UTN57 target order mismatch at index {index}")
     check(mapping["targets"] == generated["targets"], "UTN57 target catalogue differs from generated inventory")
     target_ids = [target["id"] for target in mapping["targets"]]
-    check(len(target_ids) == len(set(target_ids)) == 95, "mapping must contain 95 unique UTN57 targets")
+    check(len(target_ids) == len(set(target_ids)) == 96, "mapping must contain 96 unique UTN57 targets")
     check(target_ids[0] == "A:isol", "UTN57 target catalogue must start at A:isol")
+    check(target_ids[-1] == "Nirugu", "UTN57 target catalogue must end with Nirugu control")
     valid_targets = set(target_ids)
     particle_ids: set[str] = set()
     for index, (row, default_row) in enumerate(
@@ -309,7 +336,7 @@ def main() -> None:
     )
     print(
         "verified: 38 UTN57 rows, 32 ZVVNMOD groups, 139 font-backed codes, "
-        "80 editable ZVVNMOD sources, 95 UTN57 targets, 97 alignment rows, "
+        "80 editable ZVVNMOD sources, 96 UTN57 targets, 97 alignment rows, "
         f"47 compact editable particle rows ({unequal_particle_rows} with unequal sequence lengths), "
         "and Flutter PWA routing"
     )

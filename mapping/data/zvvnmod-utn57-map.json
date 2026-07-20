@@ -1308,6 +1308,13 @@
       "position": "init",
       "glyph": "",
       "order": 94
+    },
+    {
+      "id": "Nirugu",
+      "unit": "Nirugu",
+      "position": "control",
+      "glyph": "᠊",
+      "order": 95
     }
   ],
   "mappings": [
@@ -2098,7 +2105,9 @@
       "sources": [
         "NIRUGU"
       ],
-      "targets": [],
+      "targets": [
+        "Nirugu"
+      ],
       "note": ""
     },
     {

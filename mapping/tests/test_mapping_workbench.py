@@ -40,7 +40,7 @@ class MappingDataTests(unittest.TestCase):
         self.assertEqual(set(source_ids), set(expected_sources))
         self.assertEqual(len(mapping["mappings"]), 97)
         self.assertEqual(sum(not entry["sources"] for entry in mapping["mappings"]), 5)
-        self.assertEqual(sum(not entry["targets"] for entry in mapping["mappings"]), 2)
+        self.assertEqual(sum(not entry["targets"] for entry in mapping["mappings"]), 1)
         self.assertTrue(all(entry["sources"] or entry["targets"] for entry in mapping["mappings"]))
         self.assertTrue(
             all(set(entry) == {"id", "sources", "targets", "note"} for entry in mapping["mappings"])
@@ -54,6 +54,17 @@ class MappingDataTests(unittest.TestCase):
         targets = mapping["targets"]
         target_ids = [target["id"] for target in targets]
         self.assertEqual(target_ids[0], "A:isol")
+        self.assertEqual(len(target_ids), 96)
+        self.assertEqual(
+            targets[-1],
+            {
+                "id": "Nirugu",
+                "unit": "Nirugu",
+                "position": "control",
+                "glyph": "᠊",
+                "order": 95,
+            },
+        )
         self.assertEqual(len(target_ids), len(set(target_ids)))
         self.assertEqual([target["order"] for target in targets], list(range(len(targets))))
         self.assertTrue(all(value in source_ids for row in mapping["mappings"] for value in row["sources"]))
@@ -67,7 +78,7 @@ class MappingDataTests(unittest.TestCase):
         self.assertNotIn("source:B_I_ISOL", entries)
         self.assertEqual(sources["HX_AA_FINA"]["name"], "Hx f Aa f")
         self.assertEqual(entries["source:HX_AA_FINA"]["targets"], ["Hx:fina", "Aa:fina"])
-        self.assertEqual(entries["source:NIRUGU"]["targets"], [])
+        self.assertEqual(entries["source:NIRUGU"]["targets"], ["Nirugu"])
         self.assertEqual(entries["source:IR_FINA"]["targets"], [])
         reviewed = {
             "target:A:isol": ["A_INIT", "AA_FINA"],
